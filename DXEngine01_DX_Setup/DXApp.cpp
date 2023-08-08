@@ -7,8 +7,10 @@ DXApp* pApp = NULL;
 LRESULT CALLBACK WinProc(HWND hwnd, UINT msg,
 	WPARAM wParam, LPARAM lParam)
 {
-	if (pApp != NULL) pApp->MSGProc(hwnd, msg, wParam, lParam);
-	else return DefWindowProc(hwnd, msg, wParam, lParam);
+	if (pApp != NULL) 
+		return pApp->MSGProc(hwnd, msg, wParam, lParam);
+	
+	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
 DXApp::DXApp(HINSTANCE hinstance)

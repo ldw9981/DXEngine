@@ -1,7 +1,20 @@
 #pragma once
 
+
 #include <Windows.h>
 #include "DXUtil.h"
+
+#include <d3d11.h>
+#include <directxtk/simplemath.h>
+#include <directxtk/WICTextureLoader.h>
+#include <d3dcompiler.h>
+
+#pragma comment (lib, "d3d11.lib")
+#pragma comment(lib,"d3dcompiler.lib")
+#pragma comment(lib,"DirectXTK.lib")
+
+using namespace DirectX::SimpleMath;
+using namespace DirectX;
 
 class DXApp
 {
@@ -9,26 +22,26 @@ public:
 	// 정점 선언.
 	struct Vertex
 	{
-		XMFLOAT3 position;		// 정점 위치 정보.
-		XMFLOAT4 color;			// 정점 색상 정보.
-		XMFLOAT2 texCoord;		// 텍스처 좌표(UV).
+		Vector3 position;		// 정점 위치 정보.
+		Vector4 color;			// 정점 색상 정보.
+		Vector2 texCoord;		// 텍스처 좌표(UV).
 
 		Vertex(float x, float y, float z) : position(x, y, z) { }
-		Vertex(XMFLOAT3 position) : position(position) { }
+		Vertex(Vector3 position) : position(position) { }
 		
-		Vertex(XMFLOAT3 position, XMFLOAT4 color) 
+		Vertex(Vector3 position, Vector4 color) 
 			: position(position), color(color) { }
 		
-		Vertex(XMFLOAT3 position, XMFLOAT4 color, XMFLOAT2 uv)
+		Vertex(Vector3 position, Vector4 color, Vector2 uv)
 			: position(position), color(color), texCoord(uv) { }
 	};
 
 	// 상수 버퍼용 구조체.
 	struct CBPerObject
 	{
-		XMMATRIX world;
-		XMMATRIX view;
-		XMMATRIX projection;
+		Matrix world;
+		Matrix view;
+		Matrix projection;
 	};
 
 	DXApp(HINSTANCE hinstance);
@@ -70,9 +83,9 @@ protected:
 	int nIndices;								// 인덱스 개수.
 
 	// 공간변환에 필요한 변수 선언.
-	XMMATRIX worldMatrix;				// 월드 변환 행렬.
-	XMMATRIX viewMatrix;				// 뷰 변환 행렬.
-	XMMATRIX projectionMatrix;		// 투영 변환 행렬.
+	Matrix worldMatrix;				// 월드 변환 행렬.
+	Matrix viewMatrix;				// 뷰 변환 행렬.
+	Matrix projectionMatrix;		// 투영 변환 행렬.
 
 	XMVECTOR cameraPos;				// 카메라 위치 저장.
 	XMVECTOR cameraTarget;			// 카메라가 바라볼 방향 저장.

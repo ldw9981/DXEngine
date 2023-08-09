@@ -8,7 +8,7 @@
       <AdditionalIncludeDirectories>$(FBXSDKPath)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(FBXSDKPath)\lib\vs2019\$(IntDir)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(FBXSDKPath)\lib\vs2019\x64\release</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
 </Project>

@@ -246,15 +246,17 @@ bool DXApp::InitScene()
 {
 	// 셰이더 컴파일.
 	HRESULT hr;
+	ID3D10Blob* errorMessage = nullptr;	 // 에러 메시지를 저장할 버퍼.
 
 	// 정점 셰이더 컴파일해서 정점 셰이더 버퍼에 저장.
-	hr = D3DX11CompileFromFile(L"EffectVS.fx", NULL, NULL,
-		"main", "vs_4_0", NULL, NULL, NULL,
-		&vertexShaderBuffer, NULL, NULL);
+	hr = D3DCompileFromFile(L"EffectVS.fx", NULL, NULL,
+		"main", "vs_4_0", NULL, NULL,
+		&vertexShaderBuffer, &errorMessage);
 
 	if (FAILED(hr))
 	{
-		MessageBox(hwnd, L"정점 셰이더 컴파일 실패.", L"오류.", MB_OK);
+		MessageBoxA(hwnd, (char*)errorMessage->GetBufferPointer(), "정점 셰이더 컴파일 실패.", MB_OK);
+		Memory::SafeRelease(errorMessage);	// 에러 메세지 더이상 필요없음
 		return false;
 	}
 
@@ -272,13 +274,14 @@ bool DXApp::InitScene()
 	pDeviceContext->VSSetShader(vertexShader, NULL, NULL);
 
 	// 픽셀 셰이더 컴파일.
-	hr = D3DX11CompileFromFile(L"EffectPS.fx", NULL, NULL,
-		"main", "ps_4_0", NULL, NULL, NULL, &pixelShaderBuffer,
-		NULL, NULL);
+	hr = D3DCompileFromFile(L"EffectPS.fx", NULL, NULL,
+		"main", "ps_4_0", NULL, NULL,
+		&pixelShaderBuffer, &errorMessage);
 
 	if (FAILED(hr))
 	{
-		MessageBox(hwnd, L"픽셀 셰이더 컴파일 실패.", L"오류.", MB_OK);
+		MessageBoxA(hwnd, (char*)errorMessage->GetBufferPointer(), "픽셀 셰이더 컴파일 실패.", MB_OK);
+		Memory::SafeRelease(errorMessage);	// 에러 메세지 더이상 필요없음
 		return false;
 	}
 
@@ -470,9 +473,7 @@ bool DXApp::InitTransformation()
 
 bool DXApp::InitTexture()
 {
-	// 텍스처 파일 로드.
-	HRESULT hr = D3DX11CreateShaderResourceViewFromFile(
-		pDevice, L"iron.jpg", NULL, NULL, &pTexture, NULL);
+	HRESULT hr = CreateWICTextureFromFile(pDevice, L"iron.jpg", nullptr, &pTexture);
 	if (FAILED(hr))
 	{
 		MessageBox(NULL, L"텍스처 로드 실패", L"오류", MB_OK);

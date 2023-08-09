@@ -3,6 +3,20 @@
 #include <Windows.h>
 #include "DXUtil.h"
 
+#include <d3d11.h>
+#include <directxtk/simplemath.h>
+#include <directxtk/WICTextureLoader.h>
+#include <directxtk/DDSTextureLoader.h>
+#include <d3dcompiler.h>
+#include <vector>
+
+#pragma comment (lib, "d3d11.lib")
+#pragma comment(lib,"d3dcompiler.lib")
+#pragma comment(lib,"DirectXTK.lib")
+
+using namespace DirectX::SimpleMath;
+using namespace DirectX;
+
 class DXApp
 {
 public:
@@ -11,7 +25,7 @@ public:
 	{
 		Vector3 position;		// 정점 위치 정보.
 		Vector4 color;			// 정점 색상 정보.
-		XMFLOAT2 texCoord;		// 텍스처 좌표(UV).
+		Vector2 texCoord;		// 텍스처 좌표(UV).
 
 		Vertex(float x, float y, float z) : position(x, y, z) { }
 		Vertex(Vector3 position) : position(position) { }
@@ -19,7 +33,7 @@ public:
 		Vertex(Vector3 position, Vector4 color) 
 			: position(position), color(color) { }
 		
-		Vertex(Vector3 position, Vector4 color, XMFLOAT2 uv)
+		Vertex(Vector3 position, Vector4 color, Vector2 uv)
 			: position(position), color(color), texCoord(uv) { }
 	};
 

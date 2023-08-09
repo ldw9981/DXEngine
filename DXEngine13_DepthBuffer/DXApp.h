@@ -11,27 +11,27 @@ public:
 	// 정점 선언.
 	struct Vertex
 	{
-		XMFLOAT3 position;		// 정점 위치 정보.
-		//XMFLOAT4 color;			// 정점 색상 정보.
+		Vector3 position;		// 정점 위치 정보.
+		//Vector4 color;			// 정점 색상 정보.
 		XMFLOAT2 texCoord;		// 텍스처 좌표(UV).
-		XMFLOAT3 normal;		// 노멀 정보.
+		Vector3 normal;		// 노멀 정보.
 
 		Vertex() { }
 		Vertex(float x, float y, float z) : position(x, y, z) { }
-		Vertex(XMFLOAT3 position) : position(position) { }
+		Vertex(Vector3 position) : position(position) { }
 
-		Vertex(XMFLOAT3 position, 
+		Vertex(Vector3 position, 
 			XMFLOAT2 texCoord, 
-			XMFLOAT3 normal) : position(position), texCoord(texCoord),
+			Vector3 normal) : position(position), texCoord(texCoord),
 			normal(normal) { }
 	};
 
 	// 상수 버퍼용 구조체.
 	struct CBPerObject
 	{
-		XMMATRIX world;
-		XMMATRIX view;
-		XMMATRIX projection;
+		Matrix world;
+		Matrix view;
+		Matrix projection;
 	};
 
 	// 상수 버퍼 구조체 - 라이트 정보.
@@ -85,9 +85,9 @@ protected:
 	std::vector<DWORD> indices;			// 인덱스 배열.
 
 	// 공간변환에 필요한 변수 선언.
-	XMMATRIX worldMatrix;				// 월드 변환 행렬.
-	XMMATRIX viewMatrix;				// 뷰 변환 행렬.
-	XMMATRIX projectionMatrix;		// 투영 변환 행렬.
+	Matrix worldMatrix;				// 월드 변환 행렬.
+	Matrix viewMatrix;				// 뷰 변환 행렬.
+	Matrix projectionMatrix;		// 투영 변환 행렬.
 
 	XMVECTOR cameraPos;				// 카메라 위치 저장.
 	XMVECTOR cameraTarget;			// 카메라가 바라볼 방향 저장.
@@ -144,5 +144,5 @@ protected:
 	XMFLOAT2 ReadUV(FbxMesh* mesh, int controlPointIndex, int vertexCounter);
 
 	// 정점 노멀 읽어오는 메소드.
-	XMFLOAT3 ReadNormal(FbxMesh* mesh, int controlPointIndex, int vertexCounter);
+	Vector3 ReadNormal(FbxMesh* mesh, int controlPointIndex, int vertexCounter);
 };

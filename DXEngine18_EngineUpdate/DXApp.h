@@ -43,9 +43,9 @@ protected:
 	ID3D11Texture2D* depthStencilBuffer;
 
 	// 공간변환에 필요한 변수 선언.
-	XMMATRIX worldMatrix;				// 월드 변환 행렬.
-	XMMATRIX viewMatrix;				// 뷰 변환 행렬.
-	XMMATRIX projectionMatrix;		// 투영 변환 행렬.
+	Matrix worldMatrix;				// 월드 변환 행렬.
+	Matrix viewMatrix;				// 뷰 변환 행렬.
+	Matrix projectionMatrix;		// 투영 변환 행렬.
 
 	XMVECTOR cameraPos;				// 카메라 위치 저장.
 	XMVECTOR cameraTarget;			// 카메라가 바라볼 방향 저장.

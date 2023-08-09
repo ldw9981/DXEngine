@@ -33,18 +33,18 @@ public:
 	void DrawMesh(ID3D11DeviceContext* deviceContext);
 
 	// Getter / Setter.
-	XMFLOAT3 GetPosition() const;
-	void SetPosition(XMFLOAT3 position);
+	Vector3 GetPosition() const;
+	void SetPosition(Vector3 position);
 
-	XMFLOAT3 GetRotation() const;
-	void SetRotation(XMFLOAT3 rotation);
+	Vector3 GetRotation() const;
+	void SetRotation(Vector3 rotation);
 
-	XMFLOAT3 GetScale() const;
-	void SetScale(XMFLOAT3 scale);
+	Vector3 GetScale() const;
+	void SetScale(Vector3 scale);
 
-	XMMATRIX GetTranslationMatrix();
-	XMMATRIX GetRotationMatrix();
-	XMMATRIX GetScaleMatrix();
+	Matrix GetTranslationMatrix();
+	Matrix GetRotationMatrix();
+	Matrix GetScaleMatrix();
 
 	LPCSTR GetFBXName() const { return fbxName; }
 	
@@ -59,9 +59,9 @@ public:
 	// 추가되는 부분.
 	CBPerObject GetWVPMatrices() const { return vertexShader.GetWVPMaticex(); }
 	void SetWVPMatrices(
-		XMMATRIX world,
-		XMMATRIX view,
-		XMMATRIX projection
+		Matrix world,
+		Matrix view,
+		Matrix projection
 	) {
 		vertexShader.SetWVPMatrices(world, view, projection);
 	}
@@ -109,7 +109,7 @@ private:
 	PixelShader pixelShader;
 
 	// 트랜스폼 정보.
-	XMFLOAT3 position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	XMFLOAT3 rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	XMFLOAT3 scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	Vector3 position = Vector3(0.0f, 0.0f, 0.0f);
+	Vector3 rotation = Vector3(0.0f, 0.0f, 0.0f);
+	Vector3 scale = Vector3(1.0f, 1.0f, 1.0f);
 };

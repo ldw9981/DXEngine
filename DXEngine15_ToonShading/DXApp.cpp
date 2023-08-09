@@ -10,8 +10,10 @@ DXApp* pApp = NULL;
 LRESULT CALLBACK WinProc(HWND hwnd, UINT msg,
 	WPARAM wParam, LPARAM lParam)
 {
-	if (pApp != NULL) return pApp->MSGProc(hwnd, msg, wParam, lParam);
-	else return DefWindowProc(hwnd, msg, wParam, lParam);
+	if (pApp != NULL)
+		return pApp->MSGProc(hwnd, msg, wParam, lParam);
+
+	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
 DXApp::DXApp(HINSTANCE hinstance)
@@ -461,8 +463,8 @@ bool DXApp::InitScene()
 	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
-	viewport.Width = clientWidth;
-	viewport.Height = clientHeight;
+	viewport.Width = (float)clientWidth;
+	viewport.Height = (float)clientHeight;
 	viewport.MinDepth = 0.0f;
 	viewport.MaxDepth = 1.0f;
 
@@ -517,9 +519,9 @@ bool DXApp::LoadModel(const char * fileName)
 
 		// 정점 데이터 설정.
 		Vertex vertex(
-			XMFLOAT3(x, y, z), 
+			Vector3(x, y, z), 
 			XMFLOAT2(u, v), 
-			XMFLOAT3(nx, ny, nz));
+			Vector3(nx, ny, nz));
 
 		vertices.push_back(vertex);
 
@@ -527,9 +529,9 @@ bool DXApp::LoadModel(const char * fileName)
 		indices.push_back(ix);
 
 		//// 정점 데이터 설정.
-		//vertices[ix].position = XMFLOAT3(x, y, z);
+		//vertices[ix].position = Vector3(x, y, z);
 		//vertices[ix].texCoord = XMFLOAT2(u, v);
-		//vertices[ix].normal = XMFLOAT3(nx, ny, nz);
+		//vertices[ix].normal = Vector3(nx, ny, nz);
 
 		//// 인덱스 정보 설정.
 		//indices[ix] = ix;
@@ -789,7 +791,7 @@ HRESULT DXApp::LoadFBX(const char * fileName, std::vector<Vertex>* pOutVertices,
 					MessageBox(NULL, L"탄젠트 없음", L"오류", MB_OK);
 				}
 
-				vertex.tangent = hasNoTangent ? XMFLOAT3(0.0f, 0.0, 0.0f) : ReadTangent(fbxMesh, vertexIndex, vertexCounter);
+				vertex.tangent = hasNoTangent ? Vector3(0.0f, 0.0, 0.0f) : ReadTangent(fbxMesh, vertexIndex, vertexCounter);
 
 				// 바이노멀 읽기.
 				bool hasNoBinormal
@@ -797,7 +799,7 @@ HRESULT DXApp::LoadFBX(const char * fileName, std::vector<Vertex>* pOutVertices,
 				if (hasNoBinormal)
 					MessageBox(NULL, L"바이노멀 없음", L"오류", MB_OK);
 
-				vertex.binormal = hasNoBinormal ? XMFLOAT3(0.0f, 0.0f, 0.0f) :
+				vertex.binormal = hasNoBinormal ? Vector3(0.0f, 0.0f, 0.0f) :
 					ReadBinormal(fbxMesh, vertexIndex, vertexCounter);
 
 				// 정점 배열에 데이터 추가.
@@ -876,9 +878,9 @@ XMFLOAT2 DXApp::ReadUV(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 	return NULL;
 }
 
-XMFLOAT3 DXApp::ReadNormal(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
+Vector3 DXApp::ReadNormal(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 {
-	XMFLOAT3 normal(0.0f, 0.0f, 0.0f);
+	Vector3 normal(0.0f, 0.0f, 0.0f);
 
 	// 노멀이 있는지 확인.
 	if (mesh->GetElementNormalCount() < 1)
@@ -933,7 +935,7 @@ XMFLOAT3 DXApp::ReadNormal(FbxMesh * mesh, int controlPointIndex, int vertexCoun
 	return NULL;
 }
 
-XMFLOAT3 DXApp::ReadTangent(FbxMesh* mesh, int controlPointIndex, int vertexCounter)
+Vector3 DXApp::ReadTangent(FbxMesh* mesh, int controlPointIndex, int vertexCounter)
 {
 	// UV가 있는지 확인.
 	if (mesh->GetElementTangentCount() < 1)
@@ -943,7 +945,7 @@ XMFLOAT3 DXApp::ReadTangent(FbxMesh* mesh, int controlPointIndex, int vertexCoun
 	}
 
 	// 리턴용 변수 선언.
-	XMFLOAT3 tangent(0.0f, 0.0f, 0.0f);
+	Vector3 tangent(0.0f, 0.0f, 0.0f);
 	// UV 전체 배열 얻어오기.
 	FbxGeometryElementTangent* vertexTangent = mesh->GetElementTangent(0);
 	const bool isUsingIndex = vertexTangent->GetReferenceMode() != FbxGeometryElement::eDirect;
@@ -991,7 +993,7 @@ XMFLOAT3 DXApp::ReadTangent(FbxMesh* mesh, int controlPointIndex, int vertexCoun
 	return NULL;
 }
 
-XMFLOAT3 DXApp::ReadBinormal(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
+Vector3 DXApp::ReadBinormal(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 {
 	// UV가 있는지 확인.
 	if (mesh->GetElementBinormalCount() < 1)
@@ -1001,7 +1003,7 @@ XMFLOAT3 DXApp::ReadBinormal(FbxMesh * mesh, int controlPointIndex, int vertexCo
 	}
 
 	// 리턴용 변수 선언.
-	XMFLOAT3 binormal(0.0f, 0.0f, 0.0f);
+	Vector3 binormal(0.0f, 0.0f, 0.0f);
 	// UV 전체 배열 얻어오기.
 	FbxGeometryElementBinormal* vertexBinormal = mesh->GetElementBinormal(0);
 	const bool isUsingIndex = vertexBinormal->GetReferenceMode() != FbxGeometryElement::eDirect;

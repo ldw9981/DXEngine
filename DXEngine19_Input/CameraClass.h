@@ -17,8 +17,8 @@ public:
 	void GetPlaneDistance(float& zN, float& zF);
 	void SetPlaneDistance(float zN, float zF);
 
-	XMMATRIX GetViewMatrix() const { return viewMatrix; }
-	XMMATRIX GetProjectionMatrix() const { return projectionMatrix; }
+	Matrix GetViewMatrix() const { return viewMatrix; }
+	Matrix GetProjectionMatrix() const { return projectionMatrix; }
 
 	XMVECTOR GetPosition() const { return cameraPosition; }
 	void SetPosition(XMVECTOR pos);
@@ -56,8 +56,8 @@ private:
 
 	bool modifiedProjection = false;
 
-	XMMATRIX viewMatrix;
-	XMMATRIX projectionMatrix;
+	Matrix viewMatrix;
+	Matrix projectionMatrix;
 
 	XMVECTOR cameraPosition;
 	XMVECTOR cameraLook 

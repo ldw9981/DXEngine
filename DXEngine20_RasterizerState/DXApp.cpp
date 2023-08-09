@@ -10,8 +10,10 @@ DXApp* pApp = NULL;
 LRESULT CALLBACK WinProc(HWND hwnd, UINT msg,
 	WPARAM wParam, LPARAM lParam)
 {
-	if (pApp != NULL) return pApp->MSGProc(hwnd, msg, wParam, lParam);
-	else return DefWindowProc(hwnd, msg, wParam, lParam);
+	if (pApp != NULL)
+		return pApp->MSGProc(hwnd, msg, wParam, lParam);
+
+	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
 DXApp::DXApp(HINSTANCE hinstance)
@@ -391,8 +393,8 @@ void DXApp::InitMeshInfo()
 	);
 	// 텍스처 추가.
 	tppDiffuse.AddTexture(tppDiffuseMap);
-	tppDiffuse.SetPosition(XMFLOAT3(0.0f, -90.0f, 0.0f));
-	tppDiffuse.SetRotation(XMFLOAT3(-90.0f, 180.0f, 0.0f));
+	tppDiffuse.SetPosition(Vector3(0.0f, -90.0f, 0.0f));
+	tppDiffuse.SetRotation(Vector3(-90.0f, 180.0f, 0.0f));
 
 	// 메시 배열에 추가.
 	meshes.push_back(tppDiffuse);
@@ -403,8 +405,8 @@ void DXApp::InitMeshInfo()
 		L"Shaders//NormalPS.fx");
 	tppNormal.AddTexture(tppDiffuseMap);
 	tppNormal.AddTexture(tppNormalMap);
-	tppNormal.SetPosition(XMFLOAT3(-150.0f, -90.0f, 0.0f));
-	tppNormal.SetRotation(XMFLOAT3(-90.0f, 180.0f, 0.0f));
+	tppNormal.SetPosition(Vector3(-150.0f, -90.0f, 0.0f));
+	tppNormal.SetRotation(Vector3(-90.0f, 180.0f, 0.0f));
 	meshes.push_back(tppNormal);
 
 	Mesh boxNormal(
@@ -413,8 +415,8 @@ void DXApp::InitMeshInfo()
 		L"Shaders//NormalPS.fx");
 	boxNormal.AddTexture(boxDiffuseMap);
 	boxNormal.AddTexture(boxNormalMap);
-	boxNormal.SetPosition(XMFLOAT3(150.0f, -90.0f, 0.0f));
-	boxNormal.SetRotation(XMFLOAT3(-90.0f, 180.0f, 0.0f));
+	boxNormal.SetPosition(Vector3(150.0f, -90.0f, 0.0f));
+	boxNormal.SetRotation(Vector3(-90.0f, 180.0f, 0.0f));
 	meshes.push_back(boxNormal);
 }
 
@@ -594,8 +596,8 @@ void DXApp::SetViewport()
 	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
-	viewport.Width = clientWidth;
-	viewport.Height = clientHeight;
+	viewport.Width = (float)clientWidth;
+	viewport.Height = (float)clientHeight;
 	viewport.MinDepth = 0.0f;
 	viewport.MaxDepth = 1.0f;
 

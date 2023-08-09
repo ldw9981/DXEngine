@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup>
+    <IncludePath>$(ADSK_3DSMAX_SDK_2012)\maxsdk\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x64'" Label="Configuration">
+    <LibraryPath>$(ADSK_3DSMAX_SDK_2012)\maxsdk\x64\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='Win32'" Label="Configuration">
+    <LibraryPath>$(ADSK_3DSMAX_SDK_2012)\maxsdk\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>  
+  <ItemDefinitionGroup>
+    <Lib>
+      <AdditionalDependencies>core.lib;geom.lib;mesh.lib;maxutil.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <Link>
+      <AdditionalDependencies>core.lib;geom.lib;mesh.lib;maxutil.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <ClCompile>
+      <PreprocessorDefinitions>_VC80_UPGRADE=0x0710;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+</Project>

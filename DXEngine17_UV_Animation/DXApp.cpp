@@ -7,8 +7,10 @@ DXApp* pApp = NULL;
 LRESULT CALLBACK WinProc(HWND hwnd, UINT msg,
 	WPARAM wParam, LPARAM lParam)
 {
-	if (pApp != NULL) return pApp->MSGProc(hwnd, msg, wParam, lParam);
-	else return DefWindowProc(hwnd, msg, wParam, lParam);
+	if (pApp != NULL)
+		return pApp->MSGProc(hwnd, msg, wParam, lParam);
+
+	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
 DXApp::DXApp(HINSTANCE hinstance)
@@ -297,17 +299,17 @@ bool DXApp::InitScene()
 	// 정점 데이터(배열) 생성.
 	Vertex vertices[] = 
 	{
-		Vertex( XMFLOAT3(-0.5f, 0.5f, 0.5f), 
-		XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) ),
+		Vertex( Vector3(-0.5f, 0.5f, 0.5f), 
+		Vector4(1.0f, 0.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) ),
 
-		Vertex( XMFLOAT3(0.5f, 0.5f, 0.5f), 
-		XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT2(1.0f, 0.0f)),
+		Vertex( Vector3(0.5f, 0.5f, 0.5f), 
+		Vector4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT2(1.0f, 0.0f)),
 
-		Vertex( XMFLOAT3(0.5f, -0.5f, 0.5f), 
-		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), XMFLOAT2(1.0f, 1.0f)),
+		Vertex( Vector3(0.5f, -0.5f, 0.5f), 
+		Vector4(0.0f, 0.0f, 1.0f, 1.0f), XMFLOAT2(1.0f, 1.0f)),
 
-		Vertex( XMFLOAT3(-0.5f, -0.5f, 0.5f), 
-		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f),  XMFLOAT2(0.0f, 1.0f))
+		Vertex( Vector3(-0.5f, -0.5f, 0.5f), 
+		Vector4(0.0f, 0.0f, 1.0f, 1.0f),  XMFLOAT2(0.0f, 1.0f))
 	};
 
 	// 정점 개수 저장.
@@ -403,8 +405,8 @@ bool DXApp::InitScene()
 	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
-	viewport.Width = clientWidth;
-	viewport.Height = clientHeight;
+	viewport.Width = (float)clientWidth;
+	viewport.Height = (float)clientHeight;
 
 	// 뷰포트 설정.
 	pDeviceContext->RSSetViewports(1, &viewport);

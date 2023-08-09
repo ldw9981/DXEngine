@@ -10,8 +10,10 @@ DXApp* pApp = NULL;
 LRESULT CALLBACK WinProc(HWND hwnd, UINT msg,
 	WPARAM wParam, LPARAM lParam)
 {
-	if (pApp != NULL) return pApp->MSGProc(hwnd, msg, wParam, lParam);
-	else return DefWindowProc(hwnd, msg, wParam, lParam);
+	if (pApp != NULL)
+		return pApp->MSGProc(hwnd, msg, wParam, lParam);
+
+	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
 DXApp::DXApp(HINSTANCE hinstance)
@@ -459,8 +461,8 @@ bool DXApp::InitScene()
 	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
-	viewport.Width = clientWidth;
-	viewport.Height = clientHeight;
+	viewport.Width = (float)clientWidth;
+	viewport.Height = (float)clientHeight;
 	viewport.MinDepth = 0.0f;
 	viewport.MaxDepth = 1.0f;
 
@@ -515,9 +517,9 @@ bool DXApp::LoadModel(const char * fileName)
 
 		// 정점 데이터 설정.
 		Vertex vertex(
-			XMFLOAT3(x, y, z), 
+			Vector3(x, y, z), 
 			XMFLOAT2(u, v), 
-			XMFLOAT3(nx, ny, nz));
+			Vector3(nx, ny, nz));
 
 		vertices.push_back(vertex);
 
@@ -525,9 +527,9 @@ bool DXApp::LoadModel(const char * fileName)
 		indices.push_back(ix);
 
 		//// 정점 데이터 설정.
-		//vertices[ix].position = XMFLOAT3(x, y, z);
+		//vertices[ix].position = Vector3(x, y, z);
 		//vertices[ix].texCoord = XMFLOAT2(u, v);
-		//vertices[ix].normal = XMFLOAT3(nx, ny, nz);
+		//vertices[ix].normal = Vector3(nx, ny, nz);
 
 		//// 인덱스 정보 설정.
 		//indices[ix] = ix;
@@ -843,9 +845,9 @@ XMFLOAT2 DXApp::ReadUV(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 	return NULL;
 }
 
-XMFLOAT3 DXApp::ReadNormal(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
+Vector3 DXApp::ReadNormal(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 {
-	XMFLOAT3 normal(0.0f, 0.0f, 0.0f);
+	Vector3 normal(0.0f, 0.0f, 0.0f);
 
 	// 노멀이 있는지 확인.
 	if (mesh->GetElementNormalCount() < 1)

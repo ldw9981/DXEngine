@@ -141,36 +141,36 @@ void Mesh::DrawMesh(ID3D11DeviceContext * deviceContext)
 	deviceContext->DrawIndexed(indices.size(), 0, 0);
 }
 
-XMFLOAT3 Mesh::GetPosition() const
+Vector3 Mesh::GetPosition() const
 {
 	return position;
 }
 
-void Mesh::SetPosition(XMFLOAT3 position)
+void Mesh::SetPosition(Vector3 position)
 {
 	this->position.x = position.x;
 	this->position.y = position.y;
 	this->position.z = position.z;
 }
 
-XMFLOAT3 Mesh::GetRotation() const
+Vector3 Mesh::GetRotation() const
 {
 	return rotation;
 }
 
-void Mesh::SetRotation(XMFLOAT3 rotation)
+void Mesh::SetRotation(Vector3 rotation)
 {
 	this->rotation.x = rotation.x;
 	this->rotation.y = rotation.y;
 	this->rotation.z = rotation.z;
 }
 
-XMFLOAT3 Mesh::GetScale() const
+Vector3 Mesh::GetScale() const
 {
 	return scale;
 }
 
-void Mesh::SetScale(XMFLOAT3 scale)
+void Mesh::SetScale(Vector3 scale)
 {
 	this->scale.x = scale.x;
 	this->scale.y = scale.y;

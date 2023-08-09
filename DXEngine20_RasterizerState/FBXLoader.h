@@ -13,11 +13,11 @@ namespace FBXLoader
 	XMFLOAT2 ReadUV(FbxMesh* mesh, int controlPointIndex, int vertexCounter);
 
 	// 정점 노멀 읽어오는 메소드.
-	XMFLOAT3 ReadNormal(FbxMesh* mesh, int controlPointIndex, int vertexCounter);
+	Vector3 ReadNormal(FbxMesh* mesh, int controlPointIndex, int vertexCounter);
 
 	// 정점 탄젠트 읽기.
-	XMFLOAT3 ReadTangent(FbxMesh* mesh, int controlPointIndex, int vertexCounter);
+	Vector3 ReadTangent(FbxMesh* mesh, int controlPointIndex, int vertexCounter);
 
 	// 정점 바이노멀 읽기.
-	XMFLOAT3 ReadBinormal(FbxMesh* mesh, int controlPointIndex, int vertexCounter);
+	Vector3 ReadBinormal(FbxMesh* mesh, int controlPointIndex, int vertexCounter);
 };

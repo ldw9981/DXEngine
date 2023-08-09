@@ -12,9 +12,9 @@ public:
 
 	CBPerObject GetWVPMaticex() const { return cbMatrices; }
 	void SetWVPMatrices(
-		XMMATRIX world,
-		XMMATRIX view,
-		XMMATRIX projection);
+		Matrix world,
+		Matrix view,
+		Matrix projection);
 
 	CBLight GetLightInfo() const { return cbLight; }
 	void SetLightInfo(

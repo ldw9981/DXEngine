@@ -103,7 +103,7 @@ namespace FBXLoader
 						MessageBox(NULL, L"탄젠트 없음", L"오류", MB_OK);
 					}
 
-					vertex.tangent = hasNoTangent ? XMFLOAT3(0.0f, 0.0, 0.0f) : ReadTangent(fbxMesh, vertexIndex, vertexCounter);
+					vertex.tangent = hasNoTangent ? Vector3(0.0f, 0.0, 0.0f) : ReadTangent(fbxMesh, vertexIndex, vertexCounter);
 
 					// 바이노멀 읽기.
 					bool hasNoBinormal
@@ -111,7 +111,7 @@ namespace FBXLoader
 					if (hasNoBinormal)
 						MessageBox(NULL, L"바이노멀 없음", L"오류", MB_OK);
 
-					vertex.binormal = hasNoBinormal ? XMFLOAT3(0.0f, 0.0f, 0.0f) :
+					vertex.binormal = hasNoBinormal ? Vector3(0.0f, 0.0f, 0.0f) :
 						ReadBinormal(fbxMesh, vertexIndex, vertexCounter);
 
 					// 정점 배열에 데이터 추가.
@@ -190,9 +190,9 @@ namespace FBXLoader
 		return NULL;
 	}
 
-	XMFLOAT3 ReadNormal(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
+	Vector3 ReadNormal(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 	{
-		XMFLOAT3 normal(0.0f, 0.0f, 0.0f);
+		Vector3 normal(0.0f, 0.0f, 0.0f);
 
 		// 노멀이 있는지 확인.
 		if (mesh->GetElementNormalCount() < 1)
@@ -247,7 +247,7 @@ namespace FBXLoader
 		return NULL;
 	}
 
-	XMFLOAT3 ReadTangent(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
+	Vector3 ReadTangent(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 	{
 		// UV가 있는지 확인.
 		if (mesh->GetElementTangentCount() < 1)
@@ -257,7 +257,7 @@ namespace FBXLoader
 		}
 
 		// 리턴용 변수 선언.
-		XMFLOAT3 tangent(0.0f, 0.0f, 0.0f);
+		Vector3 tangent(0.0f, 0.0f, 0.0f);
 		// UV 전체 배열 얻어오기.
 		FbxGeometryElementTangent* vertexTangent = mesh->GetElementTangent(0);
 		const bool isUsingIndex = vertexTangent->GetReferenceMode() != FbxGeometryElement::eDirect;
@@ -305,7 +305,7 @@ namespace FBXLoader
 		return NULL;
 	}
 
-	XMFLOAT3 ReadBinormal(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
+	Vector3 ReadBinormal(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 	{
 		// 바이노멀이 있는지 확인.
 		if (mesh->GetElementBinormalCount() < 1)
@@ -315,7 +315,7 @@ namespace FBXLoader
 		}
 
 		// 리턴용 변수 선언.
-		XMFLOAT3 binormal(0.0f, 0.0f, 0.0f);
+		Vector3 binormal(0.0f, 0.0f, 0.0f);
 		// UV 전체 배열 얻어오기.
 		FbxGeometryElementBinormal* vertexBinormal = mesh->GetElementBinormal(0);
 		const bool isUsingIndex = vertexBinormal->GetReferenceMode() != FbxGeometryElement::eDirect;

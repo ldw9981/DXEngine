@@ -10,8 +10,10 @@ DXApp* pApp = NULL;
 LRESULT CALLBACK WinProc(HWND hwnd, UINT msg,
 	WPARAM wParam, LPARAM lParam)
 {
-	if (pApp != NULL) return pApp->MSGProc(hwnd, msg, wParam, lParam);
-	else return DefWindowProc(hwnd, msg, wParam, lParam);
+	if (pApp != NULL)
+		return pApp->MSGProc(hwnd, msg, wParam, lParam);
+
+	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
 DXApp::DXApp(HINSTANCE hinstance)
@@ -271,14 +273,17 @@ bool DXApp::InitScene()
 	// 셰이더 컴파일.
 	HRESULT hr;
 
+	ID3D10Blob* errorMessage = nullptr;	 // 에러 메시지를 저장할 버퍼.
+
 	// 정점 셰이더 컴파일해서 정점 셰이더 버퍼에 저장.
-	hr = D3DX11CompileFromFile(L"DiffuseVS.fx", NULL, NULL,
-		"main", "vs_4_0", NULL, NULL, NULL,
-		&vertexShaderBuffer, NULL, NULL);
+	hr = D3DCompileFromFile(L"DiffuseVS.fx", NULL, NULL,
+		"main", "vs_4_0", NULL, NULL,
+		&vertexShaderBuffer, &errorMessage);
 
 	if (FAILED(hr))
 	{
-		MessageBox(hwnd, L"정점 셰이더 컴파일 실패.", L"오류.", MB_OK);
+		MessageBoxA(hwnd, (char*)errorMessage->GetBufferPointer(), "정점 셰이더 컴파일 실패.", MB_OK);
+		Memory::SafeRelease(errorMessage);	// 에러 메세지 더이상 필요없음
 		return false;
 	}
 
@@ -296,15 +301,17 @@ bool DXApp::InitScene()
 	pDeviceContext->VSSetShader(vertexShader, NULL, NULL);
 
 	// 픽셀 셰이더 컴파일.
-	hr = D3DX11CompileFromFile(L"DiffusePS.fx", NULL, NULL,
-		"main", "ps_4_0", NULL, NULL, NULL, &pixelShaderBuffer,
-		NULL, NULL);
+	hr = D3DCompileFromFile(L"DiffusePS.fx", NULL, NULL,
+		"main", "ps_4_0", NULL, NULL,
+		&pixelShaderBuffer, &errorMessage);
 
 	if (FAILED(hr))
 	{
-		MessageBox(hwnd, L"픽셀 셰이더 컴파일 실패.", L"오류.", MB_OK);
+		MessageBoxA(hwnd, (char*)errorMessage->GetBufferPointer(), "픽셀 셰이더 컴파일 실패.", MB_OK);
+		Memory::SafeRelease(errorMessage);	// 에러 메세지 더이상 필요없음
 		return false;
 	}
+
 
 	// 픽셀 셰이더 생성.
 	hr = pDevice->CreatePixelShader(
@@ -323,17 +330,17 @@ bool DXApp::InitScene()
 	// 정점 데이터(배열) 생성.
 	/*Vertex vertices[] = 
 	{
-		Vertex( XMFLOAT3(-0.5f, 0.5f, 0.5f), 
-		XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) ),
+		Vertex( Vector3(-0.5f, 0.5f, 0.5f), 
+		Vector4(1.0f, 0.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) ),
 
-		Vertex( XMFLOAT3(0.5f, 0.5f, 0.5f), 
-		XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT2(1.0f, 0.0f)),
+		Vertex( Vector3(0.5f, 0.5f, 0.5f), 
+		Vector4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT2(1.0f, 0.0f)),
 
-		Vertex( XMFLOAT3(0.5f, -0.5f, 0.5f), 
-		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f), XMFLOAT2(1.0f, 1.0f)),
+		Vertex( Vector3(0.5f, -0.5f, 0.5f), 
+		Vector4(0.0f, 0.0f, 1.0f, 1.0f), XMFLOAT2(1.0f, 1.0f)),
 
-		Vertex( XMFLOAT3(-0.5f, -0.5f, 0.5f), 
-		XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f),  XMFLOAT2(0.0f, 1.0f))
+		Vertex( Vector3(-0.5f, -0.5f, 0.5f), 
+		Vector4(0.0f, 0.0f, 1.0f, 1.0f),  XMFLOAT2(0.0f, 1.0f))
 	};*/
 
 	// 정점 개수 저장.
@@ -433,8 +440,8 @@ bool DXApp::InitScene()
 	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
-	viewport.Width = clientWidth;
-	viewport.Height = clientHeight;
+	viewport.Width = (float)clientWidth;
+	viewport.Height = (float)clientHeight;
 
 	// 뷰포트 설정.
 	pDeviceContext->RSSetViewports(1, &viewport);
@@ -486,9 +493,9 @@ bool DXApp::LoadModel(const char * fileName)
 		fin >> nx >> ny >> nz;
 
 		// 정점 데이터 설정.
-		vertices[ix].position = XMFLOAT3(x, y, z);
+		vertices[ix].position = Vector3(x, y, z);
 		vertices[ix].texCoord = XMFLOAT2(u, v);
-		vertices[ix].normal = XMFLOAT3(nx, ny, nz);
+		vertices[ix].normal = Vector3(nx, ny, nz);
 
 		// 인덱스 정보 설정.
 		indices[ix] = ix;
@@ -558,12 +565,11 @@ bool DXApp::InitTransformation()
 bool DXApp::InitTexture()
 {
 	// 텍스처 파일 로드.
-	HRESULT hr = D3DX11CreateShaderResourceViewFromFile(
-		pDevice, L"dx.jpg", NULL, NULL, &pTexture, NULL);
+	HRESULT hr = CreateWICTextureFromFile(pDevice, L"iron.jpg", nullptr, &pTexture);
 	if (FAILED(hr))
 	{
 		MessageBox(NULL, L"텍스처 로드 실패", L"오류", MB_OK);
-		return false;	
+		return false;
 	}
 
 	// 샘플러 스테이트.

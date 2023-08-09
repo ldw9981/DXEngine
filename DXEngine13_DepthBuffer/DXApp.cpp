@@ -796,8 +796,6 @@ Vector2 DXApp::ReadUV(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 		return texCoord;
 	}
 
-
-
 	// UV 전체 배열 읽기.
 	FbxGeometryElementUV* vertexUV = mesh->GetElementUV(0);
 	const bool isUsingIndex

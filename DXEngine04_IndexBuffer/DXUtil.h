@@ -1,11 +1,9 @@
 #pragma once
 
 #include <D3D11.h>
-#include <D3DX11.h>
-#include <xnamath.h>
 
 #pragma comment(lib, "d3d11.lib")
-#pragma comment(lib, "d3dx11.lib")
+
 
 // 메모리 해제 헬퍼 함수.
 namespace Memory

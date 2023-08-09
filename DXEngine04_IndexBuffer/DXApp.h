@@ -3,19 +3,27 @@
 #include <Windows.h>
 #include "DXUtil.h"
 
+#include <d3d11.h>
+#include <directxtk/simplemath.h>
+#include <d3dcompiler.h>
+
+#pragma comment (lib, "d3d11.lib")
+#pragma comment(lib,"d3dcompiler.lib")
+
+using namespace DirectX::SimpleMath;
 class DXApp
 {
 public:
 	// 정점 선언.
 	struct Vertex
 	{
-		XMFLOAT3 position;		// 정점 위치 정보.
-		XMFLOAT4 color;			// 정점 색상 정보.
+		Vector3 position;		// 정점 위치 정보.
+		Vector4 color;			// 정점 색상 정보.
 
 		Vertex(float x, float y, float z) : position(x, y, z) { }
-		Vertex(XMFLOAT3 position) : position(position) { }
+		Vertex(Vector3 position) : position(position) { }
 		
-		Vertex(XMFLOAT3 position, XMFLOAT4 color) 
+		Vertex(Vector3 position, Vector4 color)
 			: position(position), color(color) { }
 	};
 

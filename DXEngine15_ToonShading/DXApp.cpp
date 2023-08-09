@@ -317,15 +317,17 @@ bool DXApp::InitScene()
 {
 	// 셰이더 컴파일.
 	HRESULT hr;
+	ID3D10Blob* errorMessage = nullptr;	 // 에러 메시지를 저장할 버퍼.
 
 	// 정점 셰이더 컴파일해서 정점 셰이더 버퍼에 저장.
-	hr = D3DX11CompileFromFile(L"ToonVS.fx", NULL, NULL,
-		"main", "vs_4_0", NULL, NULL, NULL,
-		&vertexShaderBuffer, NULL, NULL);
+	hr = D3DCompileFromFile(L"ToonVS.fx", NULL, NULL,
+		"main", "vs_4_0", NULL, NULL,
+		&vertexShaderBuffer, &errorMessage);
 
 	if (FAILED(hr))
 	{
-		MessageBox(hwnd, L"정점 셰이더 컴파일 실패.", L"오류.", MB_OK);
+		MessageBoxA(hwnd, (char*)errorMessage->GetBufferPointer(), "정점 셰이더 컴파일 실패.", MB_OK);
+		Memory::SafeRelease(errorMessage);	// 에러 메세지 더이상 필요없음
 		return false;
 	}
 
@@ -343,13 +345,14 @@ bool DXApp::InitScene()
 	pDeviceContext->VSSetShader(vertexShader, NULL, NULL);
 
 	// 픽셀 셰이더 컴파일.
-	hr = D3DX11CompileFromFile(L"ToonPS.fx", NULL, NULL,
-		"main", "ps_4_0", NULL, NULL, NULL, &pixelShaderBuffer,
-		NULL, NULL);
+	hr = D3DCompileFromFile(L"ToonPS.fx", NULL, NULL,
+		"main", "ps_4_0", NULL, NULL,
+		&pixelShaderBuffer, &errorMessage);
 
 	if (FAILED(hr))
 	{
-		MessageBox(hwnd, L"픽셀 셰이더 컴파일 실패.", L"오류.", MB_OK);
+		MessageBoxA(hwnd, (char*)errorMessage->GetBufferPointer(), "픽셀 셰이더 컴파일 실패.", MB_OK);
+		Memory::SafeRelease(errorMessage);	// 에러 메세지 더이상 필요없음
 		return false;
 	}
 
@@ -610,18 +613,16 @@ bool DXApp::InitTransformation()
 
 bool DXApp::InitTexture()
 {
-	// 텍스처 파일 로드.
-	HRESULT hr = D3DX11CreateShaderResourceViewFromFile(
-		pDevice, L"T_Chr_FPS_D.png", NULL, NULL, &pTexture, NULL);
+
+	HRESULT hr = CreateWICTextureFromFile(pDevice, L"T_Chr_FPS_D.png", nullptr, &pTexture);
 	if (FAILED(hr))
 	{
 		MessageBox(NULL, L"텍스처 로드 실패", L"오류", MB_OK);
-		return false;	
+		return false;
 	}
 
 	// 텍스처 파일 로드.
-	hr = D3DX11CreateShaderResourceViewFromFile(
-		pDevice, L"T_Chr_FPS_N.png", NULL, NULL, &pNormalTexture, NULL);
+	hr = CreateWICTextureFromFile(pDevice, L"T_Chr_FPS_N.png", nullptr, &pNormalTexture);
 	if (FAILED(hr))
 	{
 		MessageBox(NULL, L"텍스처 로드 실패", L"오류", MB_OK);
@@ -815,17 +816,19 @@ HRESULT DXApp::LoadFBX(const char * fileName, std::vector<Vertex>* pOutVertices,
 	return S_OK;
 }
 
-XMFLOAT2 DXApp::ReadUV(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
+Vector2 DXApp::ReadUV(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 {
+	// 반환용 데이터 선언.
+	Vector2 texCoord(0.0f, 0.0f);
+
 	// UV가 있는지 확인.
 	if (mesh->GetElementUVCount() < 1)
 	{
 		MessageBox(NULL, L"UV가 없습니다.", L"오류", MB_OK);
-		return NULL;
+		return texCoord;
 	}
 
-	// 반환용 데이터 선언.
-	XMFLOAT2 texCoord(0.0f, 0.0f);
+
 
 	// UV 전체 배열 읽기.
 	FbxGeometryElementUV* vertexUV = mesh->GetElementUV(0);
@@ -871,11 +874,11 @@ XMFLOAT2 DXApp::ReadUV(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 		default:
 		{
 			MessageBox(NULL, L"UV 값이 유효하지 않습니다", L"오류", MB_OK);
-			return NULL;
+			return texCoord;
 		}
 	}
 
-	return NULL;
+	return texCoord;
 }
 
 Vector3 DXApp::ReadNormal(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
@@ -886,7 +889,7 @@ Vector3 DXApp::ReadNormal(FbxMesh * mesh, int controlPointIndex, int vertexCount
 	if (mesh->GetElementNormalCount() < 1)
 	{
 		MessageBox(NULL, L"노멀이 없습니다.", L"오류", MB_OK);
-		return NULL;
+		return normal;
 	}
 
 	FbxGeometryElementNormal* vertexNormal = mesh->GetElementNormal(0);
@@ -928,24 +931,25 @@ Vector3 DXApp::ReadNormal(FbxMesh * mesh, int controlPointIndex, int vertexCount
 		default:
 		{
 			MessageBox(NULL, L"노멀 값이 유효하지 않습니다", L"오류", MB_OK);
-			return NULL;
+			return normal;
 		}
 	}
 
-	return NULL;
+	return normal;
 }
 
 Vector3 DXApp::ReadTangent(FbxMesh* mesh, int controlPointIndex, int vertexCounter)
 {
+	// 리턴용 변수 선언.
+	Vector3 tangent(0.0f, 0.0f, 0.0f);
+
 	// UV가 있는지 확인.
 	if (mesh->GetElementTangentCount() < 1)
 	{
 		MessageBox(NULL, L"Tangent 값이 유효하지 않습니다", L"오류", MB_OK);
-		return NULL;
+		return tangent;
 	}
 
-	// 리턴용 변수 선언.
-	Vector3 tangent(0.0f, 0.0f, 0.0f);
 	// UV 전체 배열 얻어오기.
 	FbxGeometryElementTangent* vertexTangent = mesh->GetElementTangent(0);
 	const bool isUsingIndex = vertexTangent->GetReferenceMode() != FbxGeometryElement::eDirect;
@@ -986,24 +990,26 @@ Vector3 DXApp::ReadTangent(FbxMesh* mesh, int controlPointIndex, int vertexCount
 		default:
 		{
 			MessageBox(NULL, L"Tangent 값이 유효하지 않습니다", L"오류", MB_OK);
-			return NULL;
+			return tangent;
 		}
 	}
 
-	return NULL;
+	return tangent;
 }
 
 Vector3 DXApp::ReadBinormal(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 {
+	// 리턴용 변수 선언.
+	Vector3 binormal(0.0f, 0.0f, 0.0f);
+
 	// UV가 있는지 확인.
 	if (mesh->GetElementBinormalCount() < 1)
 	{
 		MessageBox(NULL, L"Binormal 값이 유효하지 않습니다", L"오류", MB_OK);
-		return NULL;
+		return binormal;
 	}
 
-	// 리턴용 변수 선언.
-	Vector3 binormal(0.0f, 0.0f, 0.0f);
+
 	// UV 전체 배열 얻어오기.
 	FbxGeometryElementBinormal* vertexBinormal = mesh->GetElementBinormal(0);
 	const bool isUsingIndex = vertexBinormal->GetReferenceMode() != FbxGeometryElement::eDirect;
@@ -1044,9 +1050,9 @@ Vector3 DXApp::ReadBinormal(FbxMesh * mesh, int controlPointIndex, int vertexCou
 		default:
 		{
 			MessageBox(NULL, L"Binormal 값이 유효하지 않습니다", L"오류", MB_OK);
-			return NULL;
+			return binormal;
 		}
 	}
 
-	return NULL;
+	return binormal;
 }

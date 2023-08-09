@@ -1,9 +1,22 @@
 #pragma once
 
+
 #include <Windows.h>
 #include "DXUtil.h"
 #include "GameTimer.h"
+
+#include <d3d11.h>
+#include <directxtk/simplemath.h>
+#include <directxtk/WICTextureLoader.h>
+#include <d3dcompiler.h>
 #include <vector>
+
+#pragma comment (lib, "d3d11.lib")
+#pragma comment(lib,"d3dcompiler.lib")
+#pragma comment(lib,"DirectXTK.lib")
+
+using namespace DirectX::SimpleMath;
+using namespace DirectX;
 
 class DXApp
 {
@@ -13,7 +26,7 @@ public:
 	{
 		Vector3 position;		// 정점 위치 정보.
 		//Vector4 color;			// 정점 색상 정보.
-		XMFLOAT2 texCoord;		// 텍스처 좌표(UV).
+		Vector2 texCoord;		// 텍스처 좌표(UV).
 		Vector3 normal;		// 노멀 정보.
 
 		Vertex() { }
@@ -21,7 +34,7 @@ public:
 		Vertex(Vector3 position) : position(position) { }
 
 		Vertex(Vector3 position, 
-			XMFLOAT2 texCoord, 
+			Vector2 texCoord, 
 			Vector3 normal) : position(position), texCoord(texCoord),
 			normal(normal) { }
 	};
@@ -37,8 +50,8 @@ public:
 	// 상수 버퍼 구조체 - 라이트 정보.
 	struct CBLight
 	{
-		XMVECTOR lightPosition;
-		XMVECTOR cameraPosition;
+		Vector4 lightPosition;
+		Vector4 cameraPosition;
 	};
 
 	DXApp(HINSTANCE hinstance);
@@ -141,7 +154,7 @@ protected:
 		std::vector<DWORD>* pOutIndices);
 
 	// 정점 UV 읽어오는 메소드.
-	XMFLOAT2 ReadUV(FbxMesh* mesh, int controlPointIndex, int vertexCounter);
+	Vector2 ReadUV(FbxMesh* mesh, int controlPointIndex, int vertexCounter);
 
 	// 정점 노멀 읽어오는 메소드.
 	Vector3 ReadNormal(FbxMesh* mesh, int controlPointIndex, int vertexCounter);

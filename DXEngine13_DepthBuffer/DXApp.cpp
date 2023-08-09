@@ -317,15 +317,17 @@ bool DXApp::InitScene()
 {
 	// 셰이더 컴파일.
 	HRESULT hr;
+	ID3D10Blob* errorMessage = nullptr;	 // 에러 메시지를 저장할 버퍼.
 
 	// 정점 셰이더 컴파일해서 정점 셰이더 버퍼에 저장.
-	hr = D3DX11CompileFromFile(L"SpecularVS.fx", NULL, NULL,
-		"main", "vs_4_0", NULL, NULL, NULL,
-		&vertexShaderBuffer, NULL, NULL);
+	hr = D3DCompileFromFile(L"SpecularVS.fx", NULL, NULL,
+		"main", "vs_4_0", NULL, NULL,
+		&vertexShaderBuffer, &errorMessage);
 
 	if (FAILED(hr))
 	{
-		MessageBox(hwnd, L"정점 셰이더 컴파일 실패.", L"오류.", MB_OK);
+		MessageBoxA(hwnd, (char*)errorMessage->GetBufferPointer(), "정점 셰이더 컴파일 실패.", MB_OK);
+		Memory::SafeRelease(errorMessage);	// 에러 메세지 더이상 필요없음
 		return false;
 	}
 
@@ -343,13 +345,14 @@ bool DXApp::InitScene()
 	pDeviceContext->VSSetShader(vertexShader, NULL, NULL);
 
 	// 픽셀 셰이더 컴파일.
-	hr = D3DX11CompileFromFile(L"SpecularPS.fx", NULL, NULL,
-		"main", "ps_4_0", NULL, NULL, NULL, &pixelShaderBuffer,
-		NULL, NULL);
+	hr = D3DCompileFromFile(L"SpecularPS.fx", NULL, NULL,
+		"main", "ps_4_0", NULL, NULL,
+		&pixelShaderBuffer, &errorMessage);
 
 	if (FAILED(hr))
 	{
-		MessageBox(hwnd, L"픽셀 셰이더 컴파일 실패.", L"오류.", MB_OK);
+		MessageBoxA(hwnd, (char*)errorMessage->GetBufferPointer(), "픽셀 셰이더 컴파일 실패.", MB_OK);
+		Memory::SafeRelease(errorMessage);	// 에러 메세지 더이상 필요없음
 		return false;
 	}
 
@@ -609,12 +612,11 @@ bool DXApp::InitTransformation()
 bool DXApp::InitTexture()
 {
 	// 텍스처 파일 로드.
-	HRESULT hr = D3DX11CreateShaderResourceViewFromFile(
-		pDevice, L"T_Chr_FPS_D.png", NULL, NULL, &pTexture, NULL);
+	HRESULT hr = CreateWICTextureFromFile(pDevice, L"T_Chr_FPS_D.png", nullptr, &pTexture);
 	if (FAILED(hr))
 	{
 		MessageBox(NULL, L"텍스처 로드 실패", L"오류", MB_OK);
-		return false;	
+		return false;
 	}
 
 	// 샘플러 스테이트.
@@ -782,17 +784,19 @@ HRESULT DXApp::LoadFBX(const char * fileName, std::vector<Vertex>* pOutVertices,
 	return S_OK;
 }
 
-XMFLOAT2 DXApp::ReadUV(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
+Vector2 DXApp::ReadUV(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 {
+	// 반환용 데이터 선언.
+	Vector2 texCoord(0.0f, 0.0f);
+
 	// UV가 있는지 확인.
 	if (mesh->GetElementUVCount() < 1)
 	{
 		MessageBox(NULL, L"UV가 없습니다.", L"오류", MB_OK);
-		return NULL;
+		return texCoord;
 	}
 
-	// 반환용 데이터 선언.
-	XMFLOAT2 texCoord(0.0f, 0.0f);
+
 
 	// UV 전체 배열 읽기.
 	FbxGeometryElementUV* vertexUV = mesh->GetElementUV(0);
@@ -838,11 +842,11 @@ XMFLOAT2 DXApp::ReadUV(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 		default:
 		{
 			MessageBox(NULL, L"UV 값이 유효하지 않습니다", L"오류", MB_OK);
-			return NULL;
+			return texCoord;
 		}
 	}
 
-	return NULL;
+	return texCoord;
 }
 
 Vector3 DXApp::ReadNormal(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
@@ -853,7 +857,7 @@ Vector3 DXApp::ReadNormal(FbxMesh * mesh, int controlPointIndex, int vertexCount
 	if (mesh->GetElementNormalCount() < 1)
 	{
 		MessageBox(NULL, L"노멀이 없습니다.", L"오류", MB_OK);
-		return NULL;
+		return normal;
 	}
 
 	FbxGeometryElementNormal* vertexNormal = mesh->GetElementNormal(0);
@@ -895,9 +899,9 @@ Vector3 DXApp::ReadNormal(FbxMesh * mesh, int controlPointIndex, int vertexCount
 		default:
 		{
 			MessageBox(NULL, L"노멀 값이 유효하지 않습니다", L"오류", MB_OK);
-			return NULL;
+			return normal;
 		}
 	}
 
-	return NULL;
+	return normal;
 }

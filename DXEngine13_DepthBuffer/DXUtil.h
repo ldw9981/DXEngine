@@ -1,13 +1,9 @@
 #pragma once
 
 #include <D3D11.h>
-  
-  
-
 #include <fbxsdk.h>
 
-#pragma comment(lib, "d3d11.lib")
- 
+#pragma comment(lib, "d3d11.lib") 
 #pragma comment(lib, "libfbxsdk.lib")
 
 // 메모리 해제 헬퍼 함수.

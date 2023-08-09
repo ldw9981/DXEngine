@@ -303,16 +303,16 @@ bool DXApp::InitScene()
 	Vertex vertices[] = 
 	{
 		Vertex( Vector3(-0.5f, 0.5f, 0.5f), 
-		Vector4(1.0f, 0.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) ),
+		Vector4(1.0f, 0.0f, 0.0f, 1.0f), Vector2(0.0f, 0.0f) ),
 
 		Vertex( Vector3(0.5f, 0.5f, 0.5f), 
-		Vector4(0.0f, 1.0f, 0.0f, 1.0f), XMFLOAT2(1.0f, 0.0f)),
+		Vector4(0.0f, 1.0f, 0.0f, 1.0f), Vector2(1.0f, 0.0f)),
 
 		Vertex( Vector3(0.5f, -0.5f, 0.5f), 
-		Vector4(0.0f, 0.0f, 1.0f, 1.0f), XMFLOAT2(1.0f, 1.0f)),
+		Vector4(0.0f, 0.0f, 1.0f, 1.0f), Vector2(1.0f, 1.0f)),
 
 		Vertex( Vector3(-0.5f, -0.5f, 0.5f), 
-		Vector4(0.0f, 0.0f, 1.0f, 1.0f),  XMFLOAT2(0.0f, 1.0f))
+		Vector4(0.0f, 0.0f, 1.0f, 1.0f),  Vector2(0.0f, 1.0f))
 	};
 
 	// 정점 개수 저장.
@@ -473,9 +473,7 @@ bool DXApp::InitTransformation()
 
 bool DXApp::InitTexture()
 {
-	HRESULT hr;
-	// 텍스처 파일 로드.	
-	hr = CreateWICTextureFromFile(pDevice, L"iron.jpg", nullptr, &pTexture);
+	HRESULT hr = CreateWICTextureFromFile(pDevice, L"iron.jpg", nullptr, &pTexture);
 	if (FAILED(hr))
 	{
 		MessageBox(NULL, L"텍스처 로드 실패", L"오류", MB_OK);

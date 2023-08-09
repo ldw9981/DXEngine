@@ -87,9 +87,9 @@ protected:
 	Matrix viewMatrix;				// 뷰 변환 행렬.
 	Matrix projectionMatrix;		// 투영 변환 행렬.
 
-	XMVECTOR cameraPos;				// 카메라 위치 저장.
-	XMVECTOR cameraTarget;			// 카메라가 바라볼 방향 저장.
-	XMVECTOR cameraUp;				// 카메라 위 방향 저장.
+	Vector4 cameraPos;				// 카메라 위치 저장.
+	Vector4 cameraTarget;			// 카메라가 바라볼 방향 저장.
+	Vector4 cameraUp;				// 카메라 위 방향 저장.
 
 	ID3D11Buffer* cBuffer;				// 상수버퍼.
 

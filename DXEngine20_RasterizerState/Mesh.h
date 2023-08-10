@@ -58,6 +58,8 @@ public:
 
 	// 추가되는 부분.
 	CBPerObject GetWVPMatrices() const { return vertexShader.GetWVPMaticex(); }
+	CBPerObject* GetWVPMatricesPtr() { return vertexShader.GetWVPMaticexPtr(); }
+
 	void SetWVPMatrices(
 		Matrix world,
 		Matrix view,
@@ -72,6 +74,11 @@ public:
 	{ 
 		return vertexShader.GetLightInfo(); 
 	}
+	CBLight* GetLightInfoPtr() 
+	{
+		return vertexShader.GetLightInfoPtr();
+	}
+
 	void SetLightInfo(XMVECTOR lightPos, XMVECTOR camPos) 
 	{ 
 		vertexShader.SetLightInfo(lightPos, camPos); 

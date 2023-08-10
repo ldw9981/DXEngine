@@ -20,7 +20,7 @@ VertexShader::~VertexShader()
 {
 }
 
-void VertexShader::SetWVPMatrices(XMMATRIX world, XMMATRIX view, XMMATRIX projection)
+void VertexShader::SetWVPMatrices(Matrix world, Matrix view, Matrix projection)
 {
 	cbMatrices.world = XMMatrixTranspose(world);
 	cbMatrices.view = XMMatrixTranspose(view);

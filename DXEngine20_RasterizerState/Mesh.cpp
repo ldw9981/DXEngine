@@ -177,7 +177,7 @@ void Mesh::SetScale(Vector3 scale)
 	this->scale.z = scale.z;
 }
 
-XMMATRIX Mesh::GetTranslationMatrix()
+Matrix Mesh::GetTranslationMatrix()
 {
 	return XMMatrixTranslation(position.x, position.y, position.z);
 }
@@ -185,24 +185,24 @@ XMMATRIX Mesh::GetTranslationMatrix()
 //float rad2Deg = 180.0f / XM_PI;
 //float deg2Rad = XM_PI / 180.0f;
 
-XMMATRIX Mesh::GetRotationMatrix()
+Matrix Mesh::GetRotationMatrix()
 {	
-	XMMATRIX rotX 
+	Matrix rotX
 		= XMMatrixRotationX(XMConvertToRadians(rotation.x));
-	XMMATRIX rotY 
+	Matrix rotY
 		= XMMatrixRotationY(XMConvertToRadians(rotation.y));
-	XMMATRIX rotZ 
+	Matrix rotZ
 		= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
 
 	return rotZ * rotX * rotY;
 }
 
-XMMATRIX Mesh::GetScaleMarix()
+Matrix Mesh::GetScaleMarix()
 {
 	return XMMatrixScaling(scale.x, scale.y, scale.z);
 }
 
-XMMATRIX Mesh::GetWorldMatrix()
+Matrix Mesh::GetWorldMatrix()
 {
 	return GetScaleMarix() * 
 		GetRotationMatrix() * 

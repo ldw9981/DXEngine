@@ -622,7 +622,7 @@ bool DXApp::InitTexture()
 	}
 
 	// 텍스처 파일 로드.
-	hr = CreateWICTextureFromFile(pDevice, L"T_Chr_FPS_N.png", nullptr, &pTexture);
+	hr = CreateWICTextureFromFile(pDevice, L"T_Chr_FPS_N.png", nullptr, &pNormalTexture);
 	if (FAILED(hr))
 	{
 		MessageBox(NULL, L"텍스처 로드 실패", L"오류", MB_OK);

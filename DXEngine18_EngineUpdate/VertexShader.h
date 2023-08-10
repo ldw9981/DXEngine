@@ -11,12 +11,16 @@ public:
 	~VertexShader();
 
 	CBPerObject GetWVPMaticex() const { return cbMatrices; }
+	CBPerObject* GetWVPMaticexPtr() { return &cbMatrices; }
+
 	void SetWVPMatrices(
 		Matrix world,
 		Matrix view,
 		Matrix projection);
 
 	CBLight GetLightInfo() const { return cbLight; }
+	CBLight* GetLightInfoPtr() { return &cbLight; }
+
 	void SetLightInfo(
 		XMVECTOR lightPos, 
 		XMVECTOR cameraPos);

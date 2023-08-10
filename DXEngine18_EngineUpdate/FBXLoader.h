@@ -10,7 +10,7 @@ namespace FBXLoader
 	HRESULT LoadFBX(const char* fileName, std::vector<Vertex>* pOutVertices, std::vector<DWORD>* pOutIndices);
 
 	// 정점 UV 읽어오는 메소드.
-	XMFLOAT2 ReadUV(FbxMesh* mesh, int controlPointIndex, int vertexCounter);
+	Vector2 ReadUV(FbxMesh* mesh, int controlPointIndex, int vertexCounter);
 
 	// 정점 노멀 읽어오는 메소드.
 	Vector3 ReadNormal(FbxMesh* mesh, int controlPointIndex, int vertexCounter);

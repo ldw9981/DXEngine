@@ -1,14 +1,14 @@
 #pragma once
 
 #include <D3D11.h>
-  
-  
-
 #include <fbxsdk.h>
+#include <directxtk/simplemath.h>
 
-#pragma comment(lib, "d3d11.lib")
- 
+#pragma comment(lib, "d3d11.lib") 
 #pragma comment(lib, "libfbxsdk.lib")
+
+using namespace DirectX::SimpleMath;
+using namespace DirectX;
 
 // 메모리 해제 헬퍼 함수.
 namespace Memory
@@ -40,23 +40,22 @@ namespace Memory
 		}
 	}
 }
-
 // 정점 선언.
 struct Vertex
 {
 	Vector3 position;		// 정점 위치 정보.
-	XMFLOAT2 texCoord;		// 텍스처 좌표(UV).
+	Vector2 texCoord;		// 텍스처 좌표(UV).
 	Vector3 normal;		// 노멀 정보.
 	Vector3 tangent;		// 탄젠트.
 	Vector3 binormal;		// 바이노멀.
 
 	Vertex() { }
 	Vertex(float x, float y, float z) : position(x, y, z) { }
-	Vertex(Vector3 position) : position(position) { }
+	Vertex(Vector3 pos) : position(pos) { }
 
-	Vertex(Vector3 position,
-		XMFLOAT2 texCoord,
-		Vector3 normal) : position(position), texCoord(texCoord),
+	Vertex(Vector3 pos,
+		Vector2 tex,
+		Vector3 normal) : position(pos), texCoord(tex),
 		normal(normal) { }
 };
 
@@ -71,8 +70,8 @@ struct CBPerObject
 // 상수 버퍼 구조체 - 라이트 정보.
 struct CBLight
 {
-	XMVECTOR lightPosition;
-	XMVECTOR cameraPosition;
+	Vector4 lightPosition;
+	Vector4 cameraPosition;
 };
 
 struct Texture

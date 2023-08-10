@@ -1,4 +1,7 @@
 #include "PixelShader.h"
+#include <directxtk/WICTextureLoader.h>
+
+#pragma comment(lib,"DirectXTK.lib")
 
 PixelShader::PixelShader()
 {

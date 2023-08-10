@@ -3,7 +3,20 @@
 #include <Windows.h>
 #include "DXUtil.h"
 #include "GameTimer.h"
+
+#include <d3d11.h>
+#include <directxtk/simplemath.h>
+#include <directxtk/WICTextureLoader.h>
+#include <d3dcompiler.h>
 #include <vector>
+
+#pragma comment (lib, "d3d11.lib")
+#pragma comment(lib,"d3dcompiler.lib")
+#pragma comment(lib,"DirectXTK.lib")
+
+using namespace DirectX::SimpleMath;
+using namespace DirectX;
+
 #include "Mesh.h"
 #include "VertexShader.h"
 #include "PixelShader.h"
@@ -12,6 +25,8 @@
 class DXApp
 {
 public:
+
+
 	DXApp(HINSTANCE hinstance);
 	virtual ~DXApp();
 

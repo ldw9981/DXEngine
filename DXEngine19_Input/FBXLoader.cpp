@@ -129,15 +129,17 @@ namespace FBXLoader
 
 	XMFLOAT2 ReadUV(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 	{
+		// 반환용 데이터 선언.
+		XMFLOAT2 texCoord(0.0f, 0.0f);
+
 		// UV가 있는지 확인.
 		if (mesh->GetElementUVCount() < 1)
 		{
 			MessageBox(NULL, L"UV가 없습니다.", L"오류", MB_OK);
-			return NULL;
+			return texCoord;
 		}
 
-		// 반환용 데이터 선언.
-		XMFLOAT2 texCoord(0.0f, 0.0f);
+		
 
 		// UV 전체 배열 읽기.
 		FbxGeometryElementUV* vertexUV = mesh->GetElementUV(0);
@@ -183,11 +185,11 @@ namespace FBXLoader
 		default:
 		{
 			MessageBox(NULL, L"UV 값이 유효하지 않습니다", L"오류", MB_OK);
-			return NULL;
+			return texCoord;
 		}
 		}
 
-		return NULL;
+		return texCoord;
 	}
 
 	Vector3 ReadNormal(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
@@ -198,7 +200,7 @@ namespace FBXLoader
 		if (mesh->GetElementNormalCount() < 1)
 		{
 			MessageBox(NULL, L"노멀이 없습니다.", L"오류", MB_OK);
-			return NULL;
+			return normal;
 		}
 
 		FbxGeometryElementNormal* vertexNormal = mesh->GetElementNormal(0);
@@ -240,24 +242,26 @@ namespace FBXLoader
 		default:
 		{
 			MessageBox(NULL, L"노멀 값이 유효하지 않습니다", L"오류", MB_OK);
-			return NULL;
+			return normal;
 		}
 		}
 
-		return NULL;
+		return normal;
 	}
 
 	Vector3 ReadTangent(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 	{
+		// 리턴용 변수 선언.
+		Vector3 tangent(0.0f, 0.0f, 0.0f);
+
 		// UV가 있는지 확인.
 		if (mesh->GetElementTangentCount() < 1)
 		{
 			MessageBox(NULL, L"Tangent 값이 유효하지 않습니다", L"오류", MB_OK);
-			return NULL;
+			return tangent;
 		}
 
-		// 리턴용 변수 선언.
-		Vector3 tangent(0.0f, 0.0f, 0.0f);
+
 		// UV 전체 배열 얻어오기.
 		FbxGeometryElementTangent* vertexTangent = mesh->GetElementTangent(0);
 		const bool isUsingIndex = vertexTangent->GetReferenceMode() != FbxGeometryElement::eDirect;
@@ -298,24 +302,26 @@ namespace FBXLoader
 		default:
 		{
 			MessageBox(NULL, L"Tangent 값이 유효하지 않습니다", L"오류", MB_OK);
-			return NULL;
+			return tangent;
 		}
 		}
 
-		return NULL;
+		return tangent;
 	}
 
 	Vector3 ReadBinormal(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 	{
+		// 리턴용 변수 선언.
+		Vector3 binormal(0.0f, 0.0f, 0.0f);
+
 		// 바이노멀이 있는지 확인.
 		if (mesh->GetElementBinormalCount() < 1)
 		{
 			MessageBox(NULL, L"Binormal 값이 유효하지 않습니다", L"오류", MB_OK);
-			return NULL;
+			return binormal;
 		}
 
-		// 리턴용 변수 선언.
-		Vector3 binormal(0.0f, 0.0f, 0.0f);
+
 		// UV 전체 배열 얻어오기.
 		FbxGeometryElementBinormal* vertexBinormal = mesh->GetElementBinormal(0);
 		const bool isUsingIndex = vertexBinormal->GetReferenceMode() != FbxGeometryElement::eDirect;
@@ -356,10 +362,10 @@ namespace FBXLoader
 		default:
 		{
 			MessageBox(NULL, L"Binormal 값이 유효하지 않습니다", L"오류", MB_OK);
-			return NULL;
+			return binormal;
 		}
 		}
 
-		return NULL;
+		return binormal;
 	}
 }

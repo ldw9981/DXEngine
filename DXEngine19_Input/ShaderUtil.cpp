@@ -1,14 +1,21 @@
 #include "ShaderUtil.h"
 
+#include <d3dcompiler.h>
+#pragma comment(lib,"d3dcompiler.lib")
+
+
 namespace ShaderUtil
 {
 	bool CompileShader(LPCWSTR fileName, LPCSTR entry, LPCSTR profile, ID3DBlob ** pOutShaderBuffer)
 	{
-		HRESULT hr
-			= D3DX11CompileFromFile(
-				fileName, NULL, NULL, 
-				entry, profile, 0, 0, NULL, 
-				pOutShaderBuffer, NULL, NULL);
+		HRESULT hr;
+		ID3D10Blob* errorMessage = nullptr;	 // 에러 메시지를 저장할 버퍼.
+
+		// 정점 셰이더 컴파일해서 정점 셰이더 버퍼에 저장.
+		hr = D3DCompileFromFile(fileName, NULL, NULL,
+			entry, profile, NULL, NULL,
+			pOutShaderBuffer, &errorMessage);
+
 		if (FAILED(hr))
 		{
 			MessageBox(NULL, L"셰이더 컴파일 오류", L"오류", MB_OK);

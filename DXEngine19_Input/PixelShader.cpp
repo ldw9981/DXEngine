@@ -1,5 +1,9 @@
 #include "PixelShader.h"
 
+#include <directxtk/WICTextureLoader.h>
+#include <directxtk/DDSTextureLoader.h>
+#pragma comment(lib,"DirectXTK.lib")
+
 PixelShader::PixelShader()
 {
 }
@@ -97,16 +101,22 @@ bool PixelShader::LoadTextures(ID3D11Device * device)
 	for (int ix = 0; ix < textures.size(); ++ix)
 	{
 		// 텍스처 파일 로드.
-		HRESULT hr = D3DX11CreateShaderResourceViewFromFile(
-			device, 
-			textures[ix].fileName, 
-			NULL, 
-			NULL, 
-			&textures[ix].textureResource, 
-			NULL);
+		HRESULT hr = CreateWICTextureFromFile(device,
+			textures[ix].fileName,
+			nullptr,
+			&textures[ix].textureResource);
+
+		if (SUCCEEDED(hr))
+			continue;
+
+		hr = CreateDDSTextureFromFile(device,
+			textures[ix].fileName,
+			nullptr,
+			&textures[ix].textureResource);
+
 		if (FAILED(hr))
 		{
-			MessageBox(NULL, L"텍스처 로드 실패", L"오류", MB_OK);
+			MessageBox(NULL, textures[ix].fileName, L"텍스처 로드 실패", MB_OK);
 			return false;
 		}
 	}

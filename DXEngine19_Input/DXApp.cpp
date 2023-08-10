@@ -508,7 +508,7 @@ bool DXApp::InitWVPBuffer(Mesh * mesh)
 
 	D3D11_SUBRESOURCE_DATA cbData;
 	ZeroMemory(&cbData, sizeof(cbData));
-	cbData.pSysMem = &mesh->GetWVPMatrices();
+	cbData.pSysMem = mesh->GetWVPMatricesPtr();
 
 	// 버퍼 생성.
 	HRESULT hr = pDevice->CreateBuffer(&cbDesc, &cbData, &cBuffer);
@@ -536,7 +536,7 @@ void DXApp::UpdateWVPBuffer(
 	);
 
 	// 갱신된 행렬 값으로 바인딩된 버퍼 업데이트.
-	pDeviceContext->UpdateSubresource(cBuffer, 0, 0, &mesh->GetWVPMatrices(), 0, 0);
+	pDeviceContext->UpdateSubresource(cBuffer, 0, 0, mesh->GetWVPMatricesPtr(), 0, 0);
 }
 
 bool DXApp::InitLightCB()
@@ -576,7 +576,7 @@ bool DXApp::InitLightCB()
 
 void DXApp::UpdateLightCB(Mesh * mesh)
 {
-	pDeviceContext->UpdateSubresource(lightBuffer, 0, 0, &mesh->GetLightInfo(), 0, 0);
+	pDeviceContext->UpdateSubresource(lightBuffer, 0, 0, mesh->GetLightInfoPtr(), 0, 0);
 }
 
 void DXApp::BindLightCB()

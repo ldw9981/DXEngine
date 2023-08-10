@@ -52,7 +52,7 @@ private:
 	float pitch = 0.0f;		// pitch 회전 값.
 
 	float moveSpeed = 200.0f;		// 카메라 이동 속도.
-	float rotationSpeed = 30.0f;		// 카메라 회전 속도.
+	float rotationSpeed = 90.0f;		// 카메라 회전 속도.
 
 	bool modifiedProjection = false;
 

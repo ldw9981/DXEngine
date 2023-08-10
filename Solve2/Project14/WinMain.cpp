@@ -1,23 +1,32 @@
 #include <Windows.h>
 #include <d3d11.h>
-#include <D3DX11.h>
-#include <xnamath.h>
+
+#include <dinput.h>
+#include <directxtk/simplemath.h>
+#include <directxtk/WICTextureLoader.h>
+#include <d3dcompiler.h>
+#include <fbxsdk.h>
+#include <algorithm>
 #include <fstream>
 #include <vector>
-#include <algorithm>
-#include <fbxsdk.h>
-#include <dinput.h>
-using namespace std;
+
+
+
+#define DIRECTINPUT_VERSION 0x0800
 
 #pragma comment(lib, "libfbxsdk.lib")
 #pragma comment (lib, "d3d11.lib")
-#pragma comment (lib, "d3dx11.lib")
+#pragma comment(lib,"d3dcompiler.lib")
+#pragma comment(lib,"DirectXTK.lib")
 
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
+using namespace std;
+using namespace DirectX::SimpleMath;
+using namespace DirectX;
 
-#define DIRECTINPUT_VERSION 0x0800
+
 
 // 정점 선언.
 struct Vertex
@@ -60,7 +69,7 @@ HWND hwnd;
 HINSTANCE hInstance;
 UINT clientWidth = 800;
 UINT clientHeight = 600;
-LPCWSTR applicationName = PROJECT_NAME;
+LPCWSTR applicationName = L"PROJECT_NAME";
 DWORD wndStyle = WS_OVERLAPPEDWINDOW;
 
 // Device , Context
@@ -258,15 +267,15 @@ int GetFPS()
 
 XMFLOAT2 ReadUV(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 {
+	// 반환용 데이터 선언.
+	XMFLOAT2 texCoord(0.0f, 0.0f);
+
 	// UV가 있는지 확인.
 	if (mesh->GetElementUVCount() < 1)
 	{
 		MessageBox(NULL, L"UV가 없습니다.", L"오류", MB_OK);
-		return NULL;
+		return texCoord;
 	}
-
-	// 반환용 데이터 선언.
-	XMFLOAT2 texCoord(0.0f, 0.0f);
 
 	// UV 전체 배열 읽기.
 	FbxGeometryElementUV* vertexUV = mesh->GetElementUV(0);
@@ -312,11 +321,11 @@ XMFLOAT2 ReadUV(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 	default:
 	{
 		MessageBox(NULL, L"UV 값이 유효하지 않습니다", L"오류", MB_OK);
-		return NULL;
+		return texCoord;
 	}
 	}
 
-	return NULL;
+	return texCoord;
 }
 
 XMFLOAT3 ReadNormal(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
@@ -327,7 +336,7 @@ XMFLOAT3 ReadNormal(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 	if (mesh->GetElementNormalCount() < 1)
 	{
 		MessageBox(NULL, L"노멀이 없습니다.", L"오류", MB_OK);
-		return NULL;
+		return normal;
 	}
 
 	FbxGeometryElementNormal* vertexNormal = mesh->GetElementNormal(0);
@@ -369,11 +378,11 @@ XMFLOAT3 ReadNormal(FbxMesh * mesh, int controlPointIndex, int vertexCounter)
 	default:
 	{
 		MessageBox(NULL, L"노멀 값이 유효하지 않습니다", L"오류", MB_OK);
-		return NULL;
+		return normal;
 	}
 	}
 
-	return NULL;
+	return normal;
 }
 HRESULT LoadFBX(const char * fileName, std::vector<Vertex>* pOutVertices, std::vector<DWORD>* pOutIndices)
 {
@@ -595,7 +604,7 @@ bool InitWindow()
 	if (!RegisterClassEx(&wc))
 		return false;
 
-	hwnd = CreateWindow(L"WindowClass", PROJECT_NAME,
+	hwnd = CreateWindow(L"WindowClass", L"PROJECT_NAME",
 		wndStyle, 0, 0, clientWidth, clientHeight, NULL, NULL,
 		hInstance, NULL);
 
@@ -781,15 +790,21 @@ bool InitScene()
 {
 	// 셰이더 컴파일.
 	HRESULT hr;
+	ID3D10Blob* errorMessage = nullptr;	 // 에러 메시지를 저장할 버퍼.
 
 	// 정점 셰이더 컴파일해서 정점 셰이더 버퍼에 저장.
-	hr = D3DX11CompileFromFile(L"EffectVS.fx", NULL, NULL,
-		"main", "vs_4_0", NULL, NULL, NULL,
-		&vertexShaderBuffer, NULL, NULL);
+	hr = D3DCompileFromFile(L"EffectVS.fx", NULL, NULL,
+		"main", "vs_4_0", NULL, NULL,
+		&vertexShaderBuffer, &errorMessage);
 
 	if (FAILED(hr))
 	{
 		MessageBox(hwnd, L"정점 셰이더 컴파일 실패.", L"오류.", MB_OK);
+		if (errorMessage)
+		{
+			errorMessage->Release();
+			errorMessage = NULL;
+		}
 		return false;
 	}
 
@@ -807,13 +822,18 @@ bool InitScene()
 	pDeviceContext->VSSetShader(vertexShader, NULL, NULL);
 
 	// 픽셀 셰이더 컴파일.
-	hr = D3DX11CompileFromFile(L"EffectPS.fx", NULL, NULL,
-		"main", "ps_4_0", NULL, NULL, NULL, &pixelShaderBuffer,
-		NULL, NULL);
+	hr = D3DCompileFromFile(L"EffectPS.fx", NULL, NULL,
+		"main", "ps_4_0", NULL, NULL,
+		&pixelShaderBuffer, &errorMessage);
 
 	if (FAILED(hr))
 	{
 		MessageBox(hwnd, L"픽셀 셰이더 컴파일 실패.", L"오류.", MB_OK);
+		if (errorMessage)
+		{
+			errorMessage->Release();
+			errorMessage = NULL;
+		}
 		return false;
 	}
 
@@ -1014,14 +1034,13 @@ bool InitTransformation()
 
 bool InitTexture()
 {
-	// 텍스처 파일 로드.
-	HRESULT hr = D3DX11CreateShaderResourceViewFromFile(
-		pDevice, L"T_Chr_FPS_D.png", NULL, NULL, &pTexture, NULL);
+	HRESULT hr = CreateWICTextureFromFile(pDevice, L"T_Chr_FPS_D.png", nullptr, &pTexture);
 	if (FAILED(hr))
 	{
 		MessageBox(NULL, L"텍스처 로드 실패", L"오류", MB_OK);
 		return false;
 	}
+		
 
 	// 샘플러 스테이트.
 	D3D11_SAMPLER_DESC samplerDesc;

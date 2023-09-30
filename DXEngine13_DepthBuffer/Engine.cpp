@@ -21,7 +21,7 @@ bool Engine::Init()
 
 void Engine::Update(double deltaTime)
 {
-	//RotateObject(deltaTime);				// 물체 회전.
+	RotateObject(deltaTime);				// 물체 회전.
 }
 
 void Engine::Render()

@@ -30,12 +30,9 @@ float4 main(ps_input input) : SV_TARGET
 		normalize(input.N)
 	);
 
-	// 월드 노멀 값 구하기.
-	//float3 worldNormal = normalize(mul(tangentNormal, transpose(TBN)));	 // 틀린	
-	//float3 worldNormal = normalize( mul(tangentNormal, TBN) );			// 아래와같은결과
-	float3 worldNormal = (tangentNormal.x * input.T) + (tangentNormal.y * input.B) + (tangentNormal.z * input.N);
-	worldNormal = normalize(worldNormal);
-	//float3 worldNormal = tangentNormal * transpose(TBN);
+	float3 worldNormal = normalize( mul(tangentNormal, TBN) );			// 아래와같은결과
+    //float3 worldNormal = (tangentNormal.x * input.T) + (tangentNormal.y * input.B) + (tangentNormal.z * input.N);
+    worldNormal = normalize(worldNormal);	
 
 	// 라이트 벡터.
 	float3 lightDir = normalize(input.lightDir);
@@ -61,12 +58,12 @@ float4 main(ps_input input) : SV_TARGET
 
 		specular = dot(reflection, -viewDir);
 		specular = saturate(specular);
-		specular = pow(specular, 20.0f);
+		specular = pow(specular, 256.0f);
 	}
 
 	// 앰비언트 라이트.
-	float3 ambient = float3(0.1f, 0.1f, 0.1f);
+	float3 ambient = float3(0.05f, 0.05f, 0.05f);
 
 	// 최종 색상 반환.
-	return float4(diffuse + specular, 1);
+    return float4(ambient + diffuse + specular, 1);
 }

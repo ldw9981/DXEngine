@@ -562,12 +562,13 @@ bool DXApp::InitTransformation()
 	worldMatrix = rotation * translation;
 
 	// 카메라 정보 설정.
-	cameraPos = XMVectorSet(0.0f, 00.0f, -150.0f, 1.0f);
-	cameraTarget = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	cameraPos = XMVectorSet(0.0f,0.0f, -150.0f, 1.0f);
+	cameraAt = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	cameraTo = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	cameraUp = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
 
 	// 뷰 변환 행렬 설정.
-	viewMatrix = XMMatrixLookAtLH(cameraPos, cameraTarget, cameraUp);
+	viewMatrix = XMMatrixLookToLH(cameraPos, cameraTo, cameraUp);
 
 	// 투영 변환 행렬 설정. (90도 -> 라디안).
 	//float fovY = XM_PI / 4.0f;		// 세로 시야각 설정.
@@ -664,7 +665,7 @@ bool DXApp::InitLightCB()
 	// 라이트 상수 버퍼용 구조체 설정.
 	CBLight cbLight;
 	ZeroMemory(&cbLight, sizeof(cbLight));
-	cbLight.lightPosition = XMVectorSet(0.0f, 10000.0f, -0.0f, 1.0f);
+	cbLight.lightDirection = XMVectorSet(0.0f,0.0f, 1.0f , 0.0f);
 	cbLight.cameraPosition = cameraPos;
 
 	D3D11_BUFFER_DESC cbDesc;

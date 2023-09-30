@@ -418,12 +418,13 @@ bool DXApp::InitTransformation()
 	worldMatrix  = XMMatrixIdentity();
 
 	// 카메라 정보 설정.
-	cameraPos = XMVectorSet(1.0f, 1.0f, -2.0f, 0.0f);
-	cameraTarget = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	cameraPos = XMVectorSet(0.0f, 0.0f, -100.0f, 0.0f);
+	cameraLookAt = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	cameraLookTo = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	cameraUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 	// 뷰 변환 행렬 설정.
-	viewMatrix = XMMatrixLookAtLH(cameraPos, cameraTarget, cameraUp);
+	viewMatrix = XMMatrixLookToLH(cameraPos, c, cameraUp);
 
 	// 투영 변환 행렬 설정. (90도 -> 라디안).
 	float fovY = XM_PI / 4.0f;		// 세로 시야각 설정.

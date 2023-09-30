@@ -9,7 +9,7 @@ cbuffer cbPerObject : register(b0)
 // 상수버퍼 - 라이트용.
 cbuffer cbLight : register(b1)
 {
-	float4 worldLightPosition;
+	float4 worldLightDirection;
 	float4 worldCameraPosition;
 };
 
@@ -44,7 +44,7 @@ vs_output main(vs_input input)
 	output.pos = mul(input.pos, world);		// 월드 변환.
 
 	// 라이트 방향 구하기.
-	output.lightDir = normalize(output.pos - worldLightPosition);
+    output.lightDir = normalize(worldLightDirection);
 	// 뷰 방향 구하기.
 	output.viewDir = normalize(output.pos - worldCameraPosition);
 

@@ -51,7 +51,7 @@ public:
 	// 상수 버퍼 구조체 - 라이트 정보.
 	struct CBLight
 	{
-		Vector4 lightPosition;
+		Vector4 lightDirection;
 		Vector4 cameraPosition;
 	};
 
@@ -104,7 +104,9 @@ protected:
 	Matrix projectionMatrix;		// 투영 변환 행렬.
 
 	XMVECTOR cameraPos;				// 카메라 위치 저장.
-	XMVECTOR cameraTarget;			// 카메라가 바라볼 방향 저장.
+	XMVECTOR cameraAt;			// 카메라가 바라볼 방향 저장.
+	XMVECTOR cameraTo;			// 카메라가 바라볼 방향 저장.
+
 	XMVECTOR cameraUp;				// 카메라 위 방향 저장.
 
 	ID3D11Buffer* cBuffer;				// 상수버퍼.
